@@ -3,9 +3,8 @@ const inputEl = document.getElementById("input-el")
 const inputBtn = document.getElementById("input-btn")
 const ulEl = document.getElementById("ul-el")
 const deleteBtn = document.getElementById("delete-btn")
-const tabBtn = document.getElementById("tab-btn")  // Store the SAVE TAB button
-
-const leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads") )
+const leadsFromLocalStorage = JSON.parse(localStorage.getItem("myLeads"))
+const tabBtn = document.getElementById("tab-btn")
 
 if (leadsFromLocalStorage) {
     myLeads = leadsFromLocalStorage
@@ -16,9 +15,12 @@ const tabs = [
     {url: ""}
 ]
 
-// Listen for clicks on tabBtn
-tabBtn.addEventListener("click", function() {
-    console.log(tabs[0].url)  // Log URL to the console
+// Listen for click on SAVE TAB button
+tabBtn.addEventListener("click", function(){
+    // Save the URL from the tabs array to myLeads and update localStorage
+    myLeads.push(tabs[0].url)
+    localStorage.setItem("myLeads", JSON.stringify(myLeads))  // Update localStorage
+    render(myLeads)  // Re-render the list with the new lead
 })
 
 function render(leads) {
@@ -44,6 +46,6 @@ deleteBtn.addEventListener("dblclick", function() {
 inputBtn.addEventListener("click", function() {
     myLeads.push(inputEl.value)
     inputEl.value = ""
-    localStorage.setItem("myLeads", JSON.stringify(myLeads) )
+    localStorage.setItem("myLeads", JSON.stringify(myLeads))
     render(myLeads)
 })
