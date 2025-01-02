@@ -15,12 +15,18 @@ const tabs = [
     {url: ""}
 ]
 
-// Listen for click on SAVE TAB button
 tabBtn.addEventListener("click", function(){
-    // Save the URL from the tabs array to myLeads and update localStorage
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        // since only one tab should be active and in the current window at once
+        // the return variable should only have one entry
+        let activeTab = tabs[0]
+        let activeTabId = activeTab.id // or do whatever you need
+    })
+    
     myLeads.push(tabs[0].url)
-    localStorage.setItem("myLeads", JSON.stringify(myLeads))  // Update localStorage
-    render(myLeads)  // Re-render the list with the new lead
+    localStorage.setItem("myLeads", JSON.stringify(myLeads) )
+    render(myLeads)
+    
 })
 
 function render(leads) {
