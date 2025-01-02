@@ -1,22 +1,26 @@
 let myLeads = []
 const inputEl = document.getElementById("input-el")
 const inputBtn = document.getElementById("input-btn")
+const deleteBtn = document.getElementById("delete-btn") // Store the delete button
 const ulEl = document.getElementById("ul-el")
+const leadsFromLocalStorage = JSON.parse(localStorage.getItem("myLeads"))
 
-// ["lead1", "lead2"] or null
-let leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads") )
-
-// 1. Check if leadsFromLocalStorage is truthy
-// 2. If so, set myLeads to its value and call renderLeads()
 if (leadsFromLocalStorage) {
-    myLeads = leadsFromLocalStorage // Set myLeads to its value
-    renderLeads() // Render the leads
+    myLeads = leadsFromLocalStorage
+    renderLeads()
 }
+
+// Listen for double clicks on the delete button
+deleteBtn.addEventListener("dblclick", function() {
+    localStorage.clear() // Clear localStorage
+    myLeads = []         // Clear the leads array
+    ulEl.innerHTML = ""  // Clear the DOM
+})
 
 inputBtn.addEventListener("click", function() {
     myLeads.push(inputEl.value)
     inputEl.value = ""
-    localStorage.setItem("myLeads", JSON.stringify(myLeads) )
+    localStorage.setItem("myLeads", JSON.stringify(myLeads))
     renderLeads()
 })
 
@@ -31,5 +35,5 @@ function renderLeads() {
             </li>
         `
     }
-    ulEl.innerHTML = listItems  
+    ulEl.innerHTML = listItems
 }
