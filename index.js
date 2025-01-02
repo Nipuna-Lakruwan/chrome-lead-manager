@@ -7,10 +7,11 @@ const leadsFromLocalStorage = JSON.parse(localStorage.getItem("myLeads"))
 
 if (leadsFromLocalStorage) {
     myLeads = leadsFromLocalStorage
-    render(myLeads)
+    renderLeads(myLeads)  // Pass myLeads as an argument
 }
 
-function render(leads) {
+// Refactor the function to accept the 'leads' parameter
+function renderLeads(leads) {
     let listItems = ""
     for (let i = 0; i < leads.length; i++) {
         listItems += `
@@ -25,16 +26,14 @@ function render(leads) {
 }
 
 deleteBtn.addEventListener("dblclick", function() {
-    localStorage.clear()  // Clear all leads from localStorage
-    myLeads = []          // Empty the array of leads
-    render(myLeads)       // Update the DOM to show no leads
+    localStorage.clear()
+    myLeads = []
+    renderLeads(myLeads)  // Pass the updated myLeads array
 })
 
 inputBtn.addEventListener("click", function() {
-    if (inputEl.value) {
-        myLeads.push(inputEl.value)      // Add new lead to the array
-        inputEl.value = ""               // Clear the input field
-        localStorage.setItem("myLeads", JSON.stringify(myLeads)) // Store leads in localStorage
-        render(myLeads)                  // Update the DOM with the new list
-    }
+    myLeads.push(inputEl.value)
+    inputEl.value = ""
+    localStorage.setItem("myLeads", JSON.stringify(myLeads))
+    renderLeads(myLeads)  // Pass the updated myLeads array
 })
