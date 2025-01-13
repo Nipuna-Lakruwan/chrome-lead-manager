@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js"
-import { getDatabase } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js"
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js"
 
 const firebaseConfig = {
     databaseURL: process.env.DATABASE_URL
