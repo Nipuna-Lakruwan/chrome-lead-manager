@@ -1,26 +1,23 @@
-let myLeads = []
-const inputEl = document.getElementById("input-el")
-const inputBtn = document.getElementById("input-btn")
-const ulEl = document.getElementById("ul-el")
-const deleteBtn = document.getElementById("delete-btn")
-const leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads") )
-const tabBtn = document.getElementById("tab-btn")
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js"
+import { getDatabase } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js"
 
-if (leadsFromLocalStorage) {
-    myLeads = leadsFromLocalStorage
-    render(myLeads)
-}
+const firebaseConfig = {
+    databaseURL: process.env.DATABASE_URL
+};
 
-tabBtn.addEventListener("click", function(){    
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-        myLeads.push(tabs[0].url)
-        localStorage.setItem("myLeads", JSON.stringify(myLeads) )
-        render(myLeads)
-    })
-})
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+// Challenge: Create a const called 'referenceInDB' and use the ref function to create a reference called 'leads' in the database
+const referenceInDB = ref(database, "leads");
+
+const inputEl = document.getElementById("input-el");
+const inputBtn = document.getElementById("input-btn");
+const ulEl = document.getElementById("ul-el");
+const deleteBtn = document.getElementById("delete-btn");
 
 function render(leads) {
-    let listItems = ""
+    let listItems = "";
     for (let i = 0; i < leads.length; i++) {
         listItems += `
             <li>
@@ -28,20 +25,32 @@ function render(leads) {
                     ${leads[i]}
                 </a>
             </li>
-        `
+        `;
     }
-    ulEl.innerHTML = listItems
+    ulEl.innerHTML = listItems;
 }
 
-deleteBtn.addEventListener("dblclick", function() {
-    localStorage.clear()
-    myLeads = []
-    render(myLeads)
-})
+// Fetch data from the database and render it
+onValue(referenceInDB, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+        const leadsArray = Object.values(data); // Convert the object to an array
+        render(leadsArray);
+    } else {
+        ulEl.innerHTML = ""; // Clear the list if no data exists
+    }
+});
 
-inputBtn.addEventListener("click", function() {
-    myLeads.push(inputEl.value)
-    inputEl.value = ""
-    localStorage.setItem("myLeads", JSON.stringify(myLeads) )
-    render(myLeads)
-})
+// Add lead to the database
+inputBtn.addEventListener("click", function () {
+    const inputValue = inputEl.value.trim(); // Get the input value
+    if (inputValue) {
+        push(referenceInDB, inputValue); // Push the input value to the database
+        inputEl.value = ""; // Clear the input field
+    }
+});
+
+// Delete all leads from the database
+deleteBtn.addEventListener("dblclick", function () {
+    remove(referenceInDB); // Remove all data under the 'leads' reference in the database
+});
